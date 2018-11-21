@@ -37,12 +37,12 @@ S.Endpoint(conn, S.Observe(Says(S.CAPTURE, S.CAPTURE)),
            on_msg=lambda who, what: print(who, 'said', repr(what)))
 
 async def reconnect(loop):
-    while True:
-        await conn.main(loop, on_connected=lambda: print('-'*50, 'Connected'))
-        if not conn: break
-        print('-'*50, 'Disconnected')
-        await asyncio.sleep(2)
-        if not conn: break
+    while conn:
+        did_connect = await conn.main(loop, on_connected=lambda: print('-'*50, 'Connected'))
+        if did_connect:
+            print('-'*50, 'Disconnected')
+        else:
+            await asyncio.sleep(2)
 
 def accept_input(loop):
     global conn
