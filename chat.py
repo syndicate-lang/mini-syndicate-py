@@ -55,6 +55,6 @@ def accept_input(loop):
         conn.send(Says(me, line.strip()))
 
 loop = asyncio.get_event_loop()
-threading.Thread(target=lambda: accept_input(loop)).start()
+threading.Thread(target=lambda: accept_input(loop), daemon=True).start()
 loop.run_until_complete(reconnect(loop))
 loop.close()
