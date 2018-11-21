@@ -157,7 +157,7 @@ class TcpConnection(Connection, asyncio.Protocol):
         if self.stop_signal:
             self.stop_signal.set_result(True)
 
-    async def main(self, loop):
+    async def main(self, loop, on_connected=None):
         if self.transport is not None:
             raise Exception('Cannot run connection twice!')
 
@@ -173,6 +173,7 @@ class TcpConnection(Connection, asyncio.Protocol):
             return False
 
         try:
+            if on_connected: on_connected()
             await self.stop_signal
             return True
         finally:
@@ -196,7 +197,7 @@ class WebsocketConnection(Connection):
         if self.ws:
             self.loop.call_soon_threadsafe(lambda: self.loop.create_task(self.ws.close()))
 
-    async def main(self, loop):
+    async def main(self, loop, on_connected=None):
         if self.ws is not None:
             raise Exception('Cannot run connection twice!')
 
@@ -204,6 +205,7 @@ class WebsocketConnection(Connection):
 
         try:
             async with websockets.connect(self.url) as ws:
+                if on_connected: on_connected()
                 self.ws = ws
                 self._on_connected()
                 try:

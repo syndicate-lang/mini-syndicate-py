@@ -38,7 +38,7 @@ S.Endpoint(conn, S.Observe(Says(S.CAPTURE, S.CAPTURE)),
 
 async def reconnect(loop):
     while True:
-        await conn.main(loop)
+        await conn.main(loop, on_connected=lambda: print('-'*50, 'Connected'))
         if not conn: break
         print('-'*50, 'Disconnected')
         await asyncio.sleep(2)
