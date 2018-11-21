@@ -168,8 +168,8 @@ class TcpConnection(Connection, asyncio.Protocol):
                 lambda: self,
                 self.host,
                 self.port)
-        except OSError:
-            log.error('Could not connect to broker', exc_info=True)
+        except OSError as e:
+            log.error('TcpConnection: Could not connect to broker: %s' % (e,))
             return False
 
         try:
@@ -212,8 +212,8 @@ class WebsocketConnection(Connection):
                         self._on_event(protocol.Decoder(chunk).next())
                 except websockets.exceptions.ConnectionClosed:
                     pass
-        except OSError:
-            log.error('Could not connect to broker', exc_info=True)
+        except OSError as e:
+            log.error('WebsocketConnection: Could not connect to broker: %s' % (e,))
             return False
         finally:
             self._on_disconnected()
