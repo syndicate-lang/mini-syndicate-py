@@ -10,7 +10,10 @@ Says = S.Record.makeConstructor('Says', 'who what')
 if len(sys.argv) == 3:
     conn = S.TcpConnection(sys.argv[1], int(sys.argv[2]))
 elif len(sys.argv) == 2:
-    conn = S.WebsocketConnection(sys.argv[1])
+    if sys.argv[1].startswith('ws:') or sys.argv[1].startswith('wss:'):
+        conn = S.WebsocketConnection(sys.argv[1])
+    else:
+        conn = S.UnixSocketConnection(sys.argv[1])
 elif len(sys.argv) == 1:
     conn = S.WebsocketConnection('ws://localhost:8000/broker')
 else:
