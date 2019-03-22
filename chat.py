@@ -47,7 +47,7 @@ async def reconnect(loop):
         else:
             await asyncio.sleep(2)
 
-def accept_input(loop):
+def accept_input():
     global conn
     while True:
         line = sys.stdin.readline()
@@ -58,6 +58,6 @@ def accept_input(loop):
         conn.send(Says(me, line.strip()))
 
 loop = asyncio.get_event_loop()
-threading.Thread(target=lambda: accept_input(loop), daemon=True).start()
+threading.Thread(target=accept_input, daemon=True).start()
 loop.run_until_complete(reconnect(loop))
 loop.close()
