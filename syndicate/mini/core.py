@@ -55,7 +55,12 @@ class Endpoint(object):
             self._del(captures)
 
     def _add(self, captures):
-        if captures not in self.cache:
+        if captures in self.cache:
+            log.error('Broker error: duplicate captures %r added for endpoint %r %r' % (
+                captures,
+                self.id,
+                self.assertion))
+        else:
             self.cache.add(captures)
             self.on_add(*captures)
 
@@ -63,6 +68,11 @@ class Endpoint(object):
         if captures in self.cache:
             self.cache.discard(captures)
             self.on_del(*captures)
+        else:
+            log.error('Broker error: nonexistent captures %r removed from endpoint %r %r' % (
+                captures,
+                self.id,
+                self.assertion))
 
     def _msg(self, captures):
         self.on_msg(*captures)
