@@ -11,6 +11,10 @@ Add = Record.makeConstructor('Add', 'endpointName captures')
 Del = Record.makeConstructor('Del', 'endpointName captures')
 Msg = Record.makeConstructor('Msg', 'endpointName captures')
 
+## Bidirectional
+Ping = Record.makeConstructor('Ping', '')
+Pong = Record.makeConstructor('Pong', '')
+
 ## Standard Syndicate constructors
 Observe = Record.makeConstructor('observe', 'specification')
 Capture = Record.makeConstructor('capture', 'specification')
