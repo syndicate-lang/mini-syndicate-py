@@ -60,4 +60,6 @@ def accept_input():
 loop = asyncio.get_event_loop()
 threading.Thread(target=accept_input, daemon=True).start()
 loop.run_until_complete(reconnect(loop))
+loop.stop()
+loop.run_forever()
 loop.close()
