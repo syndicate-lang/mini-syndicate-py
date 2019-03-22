@@ -164,7 +164,8 @@ class _StreamConnection(Connection, asyncio.Protocol):
 
     def _disconnect(self):
         if self.stop_signal:
-            self.stop_signal.set_result(True)
+            self.stop_signal.get_loop().call_soon_threadsafe(
+                lambda: self.stop_signal.set_result(True))
 
     async def _create_connection(self, loop):
         raise Exception('subclassresponsibility')
