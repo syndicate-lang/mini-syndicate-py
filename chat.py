@@ -17,7 +17,7 @@ elif len(sys.argv) == 3:
 elif len(sys.argv) == 1:
     conn = S.WebsocketConnection('ws://localhost:8000/', 'broker')
 else:
-    sys.stderr.write(b'Usage: chat.py [ HOST PORT SCOPE | WEBSOCKETURL SCOPE ]\n')
+    sys.stderr.write('Usage: chat.py [ HOST PORT SCOPE | WEBSOCKETURL SCOPE ]\n')
     sys.exit(1)
 
 ## Courtesy of http://listofrandomnames.com/ :-)
