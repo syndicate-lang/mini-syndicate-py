@@ -131,7 +131,12 @@ class Connection(object):
         if protocol.Add.isClassOf(v): return self._lookup(v[0])._add(v[1])
         if protocol.Del.isClassOf(v): return self._lookup(v[0])._del(v[1])
         if protocol.Msg.isClassOf(v): return self._lookup(v[0])._msg(v[1])
+        if protocol.Err.isClassOf(v): return self._on_error(v[0])
         if protocol.Ping.isClassOf(v): self._send(self._encode(protocol.Pong()))
+
+    def _on_error(self, detail):
+        log.error('%s: error from server: %r' % (self.__class__.__qualname__, detail))
+        self._disconnect()
 
     def _send(self, bs):
         raise Exception('subclassresponsibility')

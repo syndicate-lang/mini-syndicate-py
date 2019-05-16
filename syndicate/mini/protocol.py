@@ -14,6 +14,7 @@ Message = Record.makeConstructor('Message', 'body')
 Add = Record.makeConstructor('Add', 'endpointName captures')
 Del = Record.makeConstructor('Del', 'endpointName captures')
 Msg = Record.makeConstructor('Msg', 'endpointName captures')
+Err = Record.makeConstructor('Err', 'detail')
 
 ## Bidirectional
 Ping = Record.makeConstructor('Ping', '')
