@@ -224,12 +224,18 @@ class WebsocketConnection(Connection):
         self.ws = None
 
     def _send(self, bs):
-        if self.ws:
-            self.loop.call_soon_threadsafe(lambda: self.loop.create_task(self.ws.send(bs)))
+        if self.loop:
+            def _do_send():
+                if self.ws:
+                    self.loop.create_task(self.ws.send(bs))
+            self.loop.call_soon_threadsafe(_do_send)
 
     def _disconnect(self):
-        if self.ws:
-            self.loop.call_soon_threadsafe(lambda: self.loop.create_task(self.ws.close()))
+        if self.loop:
+            def _do_disconnect():
+                if self.ws:
+                    self.loop.create_task(self.ws.close())
+            self.loop.call_soon_threadsafe(_do_disconnect)
 
     async def main(self, loop, on_connected=None):
         if self.ws is not None:
