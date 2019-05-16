@@ -1,12 +1,16 @@
 import preserves
 from preserves import Record, Symbol
 
-## Client -> Broker
+## Enrolment
+Connect = Record.makeConstructor('Connect', 'scope')
+Peer = Record.makeConstructor('Peer', 'scope')
+
+## Client -> Server
 Assert = Record.makeConstructor('Assert', 'endpointName assertion')
 Clear = Record.makeConstructor('Clear', 'endpointName')
 Message = Record.makeConstructor('Message', 'body')
 
-## Broker -> Client
+## Server -> Client
 Add = Record.makeConstructor('Add', 'endpointName captures')
 Del = Record.makeConstructor('Del', 'endpointName captures')
 Msg = Record.makeConstructor('Msg', 'endpointName captures')

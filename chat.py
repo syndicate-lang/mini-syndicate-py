@@ -7,17 +7,17 @@ import syndicate.mini.core as S
 Present = S.Record.makeConstructor('Present', 'who')
 Says = S.Record.makeConstructor('Says', 'who what')
 
-if len(sys.argv) == 3:
-    conn = S.TcpConnection(sys.argv[1], int(sys.argv[2]))
-elif len(sys.argv) == 2:
+if len(sys.argv) == 4:
+    conn = S.TcpConnection(sys.argv[1], int(sys.argv[2]), sys.argv[3])
+elif len(sys.argv) == 3:
     if sys.argv[1].startswith('ws:') or sys.argv[1].startswith('wss:'):
-        conn = S.WebsocketConnection(sys.argv[1])
+        conn = S.WebsocketConnection(sys.argv[1], sys.argv[2])
     else:
-        conn = S.UnixSocketConnection(sys.argv[1])
+        conn = S.UnixSocketConnection(sys.argv[1], sys.argv[2])
 elif len(sys.argv) == 1:
-    conn = S.WebsocketConnection('ws://localhost:8000/broker')
+    conn = S.WebsocketConnection('ws://localhost:8000/', 'broker')
 else:
-    sys.stderr.write(b'Usage: chat.py [ HOST PORT | WEBSOCKETURL ]\n')
+    sys.stderr.write(b'Usage: chat.py [ HOST PORT SCOPE | WEBSOCKETURL SCOPE ]\n')
     sys.exit(1)
 
 ## Courtesy of http://listofrandomnames.com/ :-)
