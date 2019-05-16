@@ -250,7 +250,7 @@ class WebsocketConnection(Connection):
                 self._on_connected()
                 try:
                     while True:
-                        chunk = await loop.create_task(ws.recv())
+                        chunk = await ws.recv()
                         self._on_event(protocol.Decoder(chunk).next())
                 except websockets.exceptions.ConnectionClosed:
                     pass
