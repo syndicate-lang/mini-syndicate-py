@@ -5,6 +5,9 @@ from preserves import Record, Symbol
 Connect = Record.makeConstructor('Connect', 'scope')
 Peer = Record.makeConstructor('Peer', 'scope')
 
+## Bidirectional
+Commit = Record.makeConstructor('Commit', '')
+
 ## Client -> Server
 Assert = Record.makeConstructor('Assert', 'endpointName assertion')
 Clear = Record.makeConstructor('Clear', 'endpointName')
