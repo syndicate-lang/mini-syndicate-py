@@ -9,17 +9,19 @@ OverlayLink = S.Record.makeConstructor('OverlayLink', 'downNode upNode')
 conn = S.WebsocketConnection(sys.argv[1], sys.argv[2])
 
 uplinks = {}
-def add_uplink(src, tgt):
+def add_uplink(turn, src, tgt):
     uplinks[src] = tgt
     summarise_uplinks()
-def del_uplink(src, tgt):
+def del_uplink(turn, src, tgt):
     del uplinks[src]
     summarise_uplinks()
 def summarise_uplinks():
     print(repr(uplinks))
-S.Endpoint(conn, S.Observe(OverlayLink(S.CAPTURE, S.CAPTURE)),
-           on_add=add_uplink,
-           on_del=del_uplink)
+
+with conn.turn() as t:
+    S.Endpoint(t, S.Observe(OverlayLink(S.CAPTURE, S.CAPTURE)),
+               on_add=add_uplink,
+               on_del=del_uplink)
 
 async def reconnect(loop):
     while conn:

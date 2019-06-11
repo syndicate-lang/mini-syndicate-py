@@ -3,10 +3,9 @@ from preserves import Record, Symbol
 
 ## Enrolment
 Connect = Record.makeConstructor('Connect', 'scope')
-Peer = Record.makeConstructor('Peer', 'scope')
 
 ## Bidirectional
-Commit = Record.makeConstructor('Commit', '')
+Turn = Record.makeConstructor('Turn', 'items')
 
 ## Client -> Server
 Assert = Record.makeConstructor('Assert', 'endpointName assertion')
@@ -18,7 +17,7 @@ Add = Record.makeConstructor('Add', 'endpointName captures')
 Del = Record.makeConstructor('Del', 'endpointName captures')
 Msg = Record.makeConstructor('Msg', 'endpointName captures')
 End = Record.makeConstructor('End', 'endpointName')
-Err = Record.makeConstructor('Err', 'detail')
+Err = Record.makeConstructor('Err', 'detail context')
 
 ## Bidirectional
 Ping = Record.makeConstructor('Ping', '')

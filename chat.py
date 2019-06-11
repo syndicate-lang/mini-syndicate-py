@@ -31,14 +31,13 @@ names = ['Daria', 'Kendra', 'Danny', 'Rufus', 'Diana', 'Arnetta', 'Dominick', 'M
 
 me = random.choice(names) + '_' + str(random.randint(10, 1000))
 
-S.Endpoint(conn, Present(me))
-
-S.Endpoint(conn, S.Observe(Present(S.CAPTURE)),
-           on_add=lambda who: print(who, 'joined'),
-           on_del=lambda who: print(who, 'left'))
-
-S.Endpoint(conn, S.Observe(Says(S.CAPTURE, S.CAPTURE)),
-           on_msg=lambda who, what: print(who, 'said', repr(what)))
+with conn.turn() as t:
+    S.Endpoint(t, Present(me))
+    S.Endpoint(t, S.Observe(Present(S.CAPTURE)),
+               on_add=lambda t, who: print(who, 'joined'),
+               on_del=lambda t, who: print(who, 'left'))
+    S.Endpoint(t, S.Observe(Says(S.CAPTURE, S.CAPTURE)),
+               on_msg=lambda t, who, what: print(who, 'said', repr(what)))
 
 async def reconnect(loop):
     while conn:
@@ -56,7 +55,8 @@ def accept_input():
             conn.destroy()
             conn = None
             break
-        conn.send(Says(me, line.strip()))
+        with conn.turn() as t:
+            t.send(Says(me, line.strip()))
 
 loop = asyncio.get_event_loop()
 loop.set_debug(True)
