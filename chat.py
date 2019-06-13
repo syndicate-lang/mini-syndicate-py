@@ -21,6 +21,11 @@ else:
         'Usage: chat.py [ HOST PORT SCOPE | WEBSOCKETURL SCOPE | UNIXSOCKETPATH SCOPE ]\n')
     sys.exit(1)
 
+_print = print
+def print(*items):
+    _print(*items)
+    sys.stdout.flush()
+
 ## Courtesy of http://listofrandomnames.com/ :-)
 names = ['Daria', 'Kendra', 'Danny', 'Rufus', 'Diana', 'Arnetta', 'Dominick', 'Melonie', 'Regan',
          'Glenda', 'Janet', 'Luci', 'Ronnie', 'Vita', 'Amie', 'Stefani', 'Catherine', 'Grady',
