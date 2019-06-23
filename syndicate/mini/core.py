@@ -206,6 +206,18 @@ class Connection(object):
     def _disconnect(self):
         raise Exception('subclassresponsibility')
 
+    async def reconnecting_main(self, loop, on_connected=None, on_disconnected=None):
+        should_run = True
+        while should_run:
+            did_connect = await self.main(loop, on_connected=on_connected)
+            if on_disconnected:
+                should_run = await on_disconnected(did_connect)
+            else:
+                if did_connect:
+                    pass # Reconnect immediately
+                else:
+                    asyncio.sleep(2)
+
     @classmethod
     def from_url(cls, s):
         return url.connection_from_url(s)
@@ -258,7 +270,7 @@ class _StreamConnection(Connection, asyncio.Protocol):
             return False
 
         try:
-            if on_connected: on_connected()
+            if on_connected: await on_connected()
             await self.stop_signal
             return True
         finally:
@@ -336,7 +348,7 @@ class WebsocketConnection(Connection):
 
         try:
             async with websockets.connect(self.url) as ws:
-                if on_connected: on_connected()
+                if on_connected: await on_connected()
                 self.ws = ws
                 self._on_connected()
                 try:

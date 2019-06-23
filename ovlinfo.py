@@ -23,17 +23,18 @@ with conn.turn() as t:
                on_add=add_uplink,
                on_del=del_uplink)
 
-async def reconnect(loop):
-    while conn:
-        did_connect = await conn.main(loop, on_connected=lambda: print('-'*50, 'Connected'))
-        if did_connect:
-            print('-'*50, 'Disconnected')
-        else:
-            await asyncio.sleep(2)
+async def on_connected():
+    print('-'*50, 'Connected')
+async def on_disconnected(did_connect):
+    if did_connect:
+        print('-'*50, 'Disconnected')
+    else:
+        await asyncio.sleep(2)
+    return True
 
 loop = asyncio.get_event_loop()
 loop.set_debug(True)
-loop.run_until_complete(reconnect(loop))
+loop.run_until_complete(conn.reconnecting_main(loop, on_connected, on_disconnected))
 loop.stop()
 loop.run_forever()
 loop.close()
