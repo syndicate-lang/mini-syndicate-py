@@ -33,12 +33,13 @@ names = ['Daria', 'Kendra', 'Danny', 'Rufus', 'Diana', 'Arnetta', 'Dominick', 'M
 me = random.choice(names) + '_' + str(random.randint(10, 1000))
 
 with conn.turn() as t:
-    S.Endpoint(t, Present(me))
-    S.Endpoint(t, S.Observe(Present(S.CAPTURE)),
-               on_add=lambda t, who: print(who, 'joined'),
-               on_del=lambda t, who: print(who, 'left'))
-    S.Endpoint(t, S.Observe(Says(S.CAPTURE, S.CAPTURE)),
-               on_msg=lambda t, who, what: print(who, 'said', repr(what)))
+    with conn.actor().react(t) as facet:
+        facet.add(Present(me))
+        facet.add(S.Observe(Present(S.CAPTURE)),
+                  on_add=lambda t, who: print(who, 'joined'),
+                  on_del=lambda t, who: print(who, 'left'))
+        facet.add(S.Observe(Says(S.CAPTURE, S.CAPTURE)),
+                  on_msg=lambda t, who, what: print(who, 'said', repr(what)))
 
 async def on_connected():
     print('-'*50, 'Connected')
