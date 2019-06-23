@@ -108,6 +108,9 @@ class Actor(object):
             self._log = logging.getLogger('syndicate.mini.Actor.%s' % (self.name,))
         return self._log
 
+    def is_alive(self):
+        return self.alive
+
     def react(self, turn):
         return FacetSetupContext(turn, Facet(self.conn, self, self))
 
@@ -169,9 +172,12 @@ class Facet(object):
     def log(self):
         return self.actor.log
 
+    def is_alive(self):
+        return self.state == 1
+
     def _ensure_state(self, wanted_state, message):
         if self.state != wanted_state:
-            raise Exception(message)
+            raise Exception(message, self.state)
 
     def _add_child(self, facet):
         self._ensure_state(1, 'Cannot add child facet in this state')
@@ -201,6 +207,8 @@ class Facet(object):
         for e in self.endpoints: e._start(turn)
         for t in self.start_callbacks: t(turn)
         self.start_callbacks.clear()
+        if not self.parent.is_alive() or self.is_inert():
+            self.stop(turn)
 
     def is_inert(self):
         return len(self.children) == 0 and len(self.endpoints) == 0

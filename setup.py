@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name="mini-syndicate",
-    version="0.0.5",
+    version="0.0.6",
     author="Tony Garnock-Jones",
     author_email="tonyg@leastfixedpoint.com",
     license="GNU General Public License v3 or later (GPLv3+)",
