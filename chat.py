@@ -7,19 +7,15 @@ import syndicate.mini.core as S
 Present = S.Record.makeConstructor('Present', 'who')
 Says = S.Record.makeConstructor('Says', 'who what')
 
-if len(sys.argv) == 4:
-    conn = S.TcpConnection(sys.argv[1], int(sys.argv[2]), sys.argv[3])
-elif len(sys.argv) == 3:
-    if sys.argv[1].startswith('ws:') or sys.argv[1].startswith('wss:'):
-        conn = S.WebsocketConnection(sys.argv[1], sys.argv[2])
-    else:
-        conn = S.UnixSocketConnection(sys.argv[1], sys.argv[2])
-elif len(sys.argv) == 1:
-    conn = S.WebsocketConnection('ws://localhost:8000/', 'chat')
+if len(sys.argv) == 1:
+    conn_url = 'ws://localhost:8000/#chat'
+elif len(sys.argv) == 2:
+    conn_url = sys.argv[1]
 else:
     sys.stderr.write(
-        'Usage: chat.py [ HOST PORT SCOPE | WEBSOCKETURL SCOPE | UNIXSOCKETPATH SCOPE ]\n')
+        'Usage: chat.py [ tcp://HOST[:PORT]#SCOPE | ws://HOST[:PORT]#SCOPE | unix:PATH#SCOPE ]\n')
     sys.exit(1)
+conn = S.Connection.from_url(conn_url)
 
 _print = print
 def print(*items):

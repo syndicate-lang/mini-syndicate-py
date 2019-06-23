@@ -2,10 +2,13 @@ import asyncio
 import secrets
 import logging
 import websockets
+import re
+from urllib.parse import urlparse, urlunparse
 
 log = logging.getLogger(__name__)
 
 import syndicate.mini.protocol as protocol
+import syndicate.mini.url as url
 
 from syndicate.mini.protocol import Capture, Discard, Observe
 CAPTURE = Capture(Discard())
@@ -203,6 +206,10 @@ class Connection(object):
     def _disconnect(self):
         raise Exception('subclassresponsibility')
 
+    @classmethod
+    def from_url(cls, s):
+        return url.connection_from_url(s)
+
 class _StreamConnection(Connection, asyncio.Protocol):
     def __init__(self, scope):
         super().__init__(scope)
@@ -260,6 +267,7 @@ class _StreamConnection(Connection, asyncio.Protocol):
             self.stop_signal = None
             self.decoder = None
 
+@url.schema('tcp')
 class TcpConnection(_StreamConnection):
     def __init__(self, host, port, scope):
         super().__init__(scope)
@@ -269,6 +277,19 @@ class TcpConnection(_StreamConnection):
     async def _create_connection(self, loop):
         return await loop.create_connection(lambda: self, self.host, self.port)
 
+    @classmethod
+    def default_port(cls):
+        return 21369
+
+    @classmethod
+    def from_url(cls, s):
+        u = urlparse(s)
+        host, port = url._hostport(u.netloc, cls.default_port())
+        if not host: return
+        scope = u.fragment
+        return cls(host, port, scope)
+
+@url.schema('unix')
 class UnixSocketConnection(_StreamConnection):
     def __init__(self, path, scope):
         super().__init__(scope)
@@ -277,6 +298,13 @@ class UnixSocketConnection(_StreamConnection):
     async def _create_connection(self, loop):
         return await loop.create_unix_connection(lambda: self, self.path)
 
+    @classmethod
+    def from_url(cls, s):
+        u = urlparse(s)
+        return cls(u.path, u.fragment)
+
+@url.schema('ws')
+@url.schema('wss')
 class WebsocketConnection(Connection):
     def __init__(self, url, scope):
         super().__init__(scope)
@@ -328,3 +356,8 @@ class WebsocketConnection(Connection):
         self.loop = None
         self.ws = None
         return True
+
+    @classmethod
+    def from_url(cls, s):
+        u = urlparse(s)
+        return cls(urlunparse(u._replace(fragment='')), u.fragment)

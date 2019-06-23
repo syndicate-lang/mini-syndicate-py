@@ -6,7 +6,7 @@ import syndicate.mini.core as S
 
 OverlayLink = S.Record.makeConstructor('OverlayLink', 'downNode upNode')
 
-conn = S.WebsocketConnection(sys.argv[1], sys.argv[2])
+conn = S.Connection.from_url(sys.argv[1])
 
 uplinks = {}
 def add_uplink(turn, src, tgt):
