@@ -216,7 +216,7 @@ class Connection(object):
                 if did_connect:
                     pass # Reconnect immediately
                 else:
-                    asyncio.sleep(2)
+                    await asyncio.sleep(2)
 
     @classmethod
     def from_url(cls, s):
