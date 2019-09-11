@@ -1,5 +1,5 @@
 import preserves
-from preserves import Record, Symbol
+from preserves import Record
 
 ## Enrolment
 Connect = Record.makeConstructor('Connect', 'scope')
