@@ -13,6 +13,7 @@ import syndicate.mini.url as url
 from syndicate.mini.protocol import Capture, Discard, Observe
 CAPTURE = Capture(Discard())
 
+# This is 'import *' in order to effectively re-export preserves as part of this module's API.
 from preserves import *
 
 def _encode(event):
